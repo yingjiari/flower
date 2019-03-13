@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.OrderflowerDao"><!--.dao-->
+
+    <!--添加-->
+    <insert id="insertOrderflower" parameterType="Orderflower" useGeneratedKeys="true" keyColumn="orderflowerId">
+        insert into orderflower(flowerId,orderFlowerAmount,cartId,orderFlowerPrice)
+        select c.flowerId,c.cartAmount,c.cartId,f.flowerPrice from cart c,flower f
+        where c.flowerId=f.flowerId and cartId in
+        <foreach collection="cartIds" item="cartId" open="(" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </insert>
+
+    <!--修改-->
+    <update id="updateOrderflowerBycartId" parameterType="Orderflower">
+      update orderflower set orderId=#{orderId} where cartId in
+        <foreach collection="cartIds" open="(" item="cartId" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </update>
+
+    <!--批量删除-->
+    <delete id="deleteAll">
+        delete from orderflower
+        <where>
+            <!--<if test="orderflowerId!=null and orderflowerId.size() gt 0">-->
+            orderflowerId in
+            <foreach collection="orderflowerIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <!--</if>-->
+        </where>
+    </delete>
+
+    <!--id应该是接口中的方法，结果类型如没有配置别名则应该使用全名称-->
+    <resultMap id="allOrderflower" type="Orderflower">
+        <id column="orderflowerId" property="orderflowerId"></id>
+        <result column="flowerId" property="flowerId"></result>
+        <result column="orderId" property="orderId"></result>
+        <result column="orderFlowerAmount" property="orderFlowerAmount"></result>
+        <result column="cartId" property="cartId"></result>
+        <result column="orderFlowerPrice" property="orderFlowerPrice"></result>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="flower" javaType="Flower">
+            <id property="flowerId" column="flowerId"></id>
+            <result property="flowerTypeId" column="flowerTypeId"></result>
+            <result property="flowerUseId" column="flowerUseId"></result>
+            <result property="flowerBranchNumberId" column="flowerBranchNumberId"></result>
+            <result property="flowerMarketPrice" column="flowerMarketPrice"></result>
+            <result property="flowerPrice" column="flowerPrice"></result>
+            <result property="flowerInventory" column="flowerInventory"></result>
+            <result property="flowerImageName" column="flowerImageName"></result>
+            <result property="flowerName" column="flowerName"></result>
+            <result property="flowerDateTime" column="flowerDateTime"></result>
+            <result property="flowerMaterials" column="flowerMaterials"></result>
+            <result property="flowerPackaging" column="flowerPackaging"></result>
+            <result property="flowerLanguage" column="flowerLanguage"></result>
+            <result property="flowerIntroduce" column="flowerIntroduce"></result>
+            <result property="stateId" column="stateId"></result>
+        </association>
+    </resultMap>
+
+    <!--根据订单编号查询订单商品-->
+    <select id="selectAllByOrderId" resultMap="allOrderflower">
+      select  * from orderflower o,flower f where o.flowerId=f.flowerId and orderId=#{orderId}
+    </select>
+
+
+
+
+    <!--查询id-->
+    <select id="selectAllOrderflowerId" resultMap="allOrderflower">
+      select  * from orderflower where orderflowerId=#{orderflowerId}
+    </select>
+    <!--查询全部-->
+    <select id="selectAllOrderflower" resultMap="allOrderflower">
+         select * from orderflower
+    </select>
+    <!--分页查询-->
+    <select id="selectAllOrderflowerByPage" resultMap="allOrderflower">
+         select * from orderflower limit #{pagelimit},#{size};
+    </select>
+
+    <!--删除-->
+    <delete id="deleteOrderflower" parameterType="int">
+        delete from orderflower where orderflowerId=#{orderflowerId};
+    </delete>
+
+
+
+
+    <!--修改-->
+    <update id="updateOrderflower" parameterType="Orderflower">
+      update orderflower set flowerId=#{flowerId},orderId=#{orderId},orderFlowerAmount=#{orderFlowerAmount} where orderflowerId=#{orderflowerId}
+    </update>
+</mapper>

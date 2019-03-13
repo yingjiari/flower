@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.OrderDao"><!--.dao-->
+
+    <!--添加-->
+    <insert id="insertOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="orderId">
+        insert into `order`
+        (orderId,orderPrice,orderConsigneeName,orderConsigneePhone,orderAddress,
+        orderDetailedAddress,orderDeliveryTime,orderDeliveryTimeFrame,orderBuyerName,
+        orderBuyerPhone,orderMailbox,orderGreetingMessage,userId)
+        values
+        (#{orderId},#{orderPrice},#{orderConsigneeName},#{orderConsigneePhone},
+        #{orderAddress},#{orderDetailedAddress},#{orderDeliveryTime},#{orderDeliveryTimeFrame},#{orderBuyerName},
+        #{orderBuyerPhone},#{orderMailbox},#{orderGreetingMessage},#{userId})
+    </insert>
+    <!--查询全部订单及订单商品信息-->
+    <select id="selectAllOrder" resultMap="allOrder">
+        select * from `order` o,orderflower op,flower f
+        <where>
+            o.orderId=op.orderId and op.flowerId=f.flowerId
+            <if test="userId!='' and userId!=null">
+                and o.userId=#{userId}
+            </if>
+            <if test="orderState!=8">
+                and o.orderState =#{orderState}
+            </if>
+        </where>
+        ORDER BY orderDate DESC
+    </select>
+    <!--id应该是接口中的方法，结果类型如没有配置别名则应该使用全名称-->
+    <resultMap id="allOrder" type="Order">
+        <id column="orderId" property="orderId"></id>
+        <result column="orderPrice" property="orderPrice"></result>
+        <result column="orderState" property="orderState"></result>
+        <result column="orderDate" property="orderDate"></result>
+        <result column="orderConsigneeName" property="orderConsigneeName"></result>
+        <result column="orderConsigneePhone" property="orderConsigneePhone"></result>
+        <result column="orderAddress" property="orderAddress"></result>
+        <result column="orderDetailedAddress" property="orderDetailedAddress"></result>
+        <result column="orderDeliveryTime" property="orderDeliveryTime"></result>
+        <result column="orderDeliveryTimeFrame" property="orderDeliveryTimeFrame"></result>
+        <result column="orderBuyerName" property="orderBuyerName"></result>
+        <result column="orderBuyerPhone" property="orderBuyerPhone"></result>
+        <result column="orderMailbox" property="orderMailbox"></result>
+        <result column="orderGreetingMessage" property="orderGreetingMessage"></result>
+        <result column="userId" property="userId"></result>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="user" javaType="User">
+            <id property="userId" column="userId"></id>
+            <result property="userPassword" column="userPassword"></result>
+            <result property="userSex" column="userSex"></result>
+            <result property="userName" column="userName"></result>
+            <result property="userMailbox" column="userMailbox"></result>
+            <result property="userPhone" column="userPhone"></result>
+            <result property="userAddress" column="userAddress"></result>
+            <result property="userHeadPortrait" column="userHeadPortrait"></result>
+            <result property="userBirthday" column="userBirthday"></result>
+            <result property="userStateId" column="userStateId"></result>
+            <result property="registerDate" column="registerDate"></result>
+        </association>
+        <association property="state" javaType="State">
+            <id property="stateId" column="stateId"></id>
+            <result property="stateName" column="stateName"></result>
+        </association>
+        <!--映射集合，指定属性与属性的类型-->
+        <collection property="orderflowerList" resultMap="orderflowerLists">
+
+        </collection>
+    </resultMap>
+
+    <resultMap id="orderflowerLists" type="orderflower">
+        <id property="orderflowerId" column="orderflowerId"></id>
+        <result property="flowerId" column="flowerId"></result>
+        <result property="orderId" column="orderId"></result>
+        <result property="orderFlowerAmount" column="orderFlowerAmount"></result>
+        <result property="cartId" column="cartId"></result>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="flower" javaType="Flower">
+            <id property="flowerId" column="flowerId"></id>
+            <result property="flowerTypeId" column="flowerTypeId"></result>
+            <result property="flowerUseId" column="flowerUseId"></result>
+            <result property="flowerBranchNumberId" column="flowerBranchNumberId"></result>
+            <result property="flowerMarketPrice" column="flowerMarketPrice"></result>
+            <result property="flowerPrice" column="flowerPrice"></result>
+            <result property="flowerInventory" column="flowerInventory"></result>
+            <result property="flowerImageName" column="flowerImageName"></result>
+            <result property="flowerName" column="flowerName"></result>
+            <result property="flowerDateTime" column="flowerDateTime"></result>
+            <result property="flowerMaterials" column="flowerMaterials"></result>
+            <result property="flowerPackaging" column="flowerPackaging"></result>
+            <result property="flowerLanguage" column="flowerLanguage"></result>
+            <result property="flowerIntroduce" column="flowerIntroduce"></result>
+            <result property="stateId" column="stateId"></result>
+        </association>
+    </resultMap>
+
+    <!--查询id-->
+    <select id="selectAllOrderId" resultMap="allOrder">
+      select  * from `order` where orderId=#{orderId}
+    </select>
+
+    <!--查询全部订单信息-->
+    <select id="selectAllOrderPage" resultMap="allOrder">
+        select * from `order` o,user u,state s
+        <where>
+            o.userId=u.userId and o.orderState=s.stateId
+            <if test="orderId!='' and orderId!=null">
+                and o.orderId=#{orderId}
+            </if>
+            <if test="orderState!=8">
+                and o.orderState =#{orderState}
+            </if>
+        </where>
+        ORDER BY orderDate DESC limit #{skip},#{size}
+    </select>
+
+    <select id="getOrderCount" resultType="int">
+        select COUNT(*) from `order` o
+        <where>
+            <if test="orderId!='' and orderId!=null">
+                and o.orderId=#{orderId}
+            </if>
+            <if test="orderState!=8">
+                and o.orderState =#{orderState}
+            </if>
+            <if test="orderDate!='' and orderDate!=null">
+                and orderDate like concat(concat('%',#{orderDate}),'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 修改订单状态 -->
+    <update id="UpdateOrderState" parameterType="Order">
+        update `order` set
+        orderState=#{orderState}
+        where orderId=#{orderId}
+    </update>
+
+
+
+
+
+
+
+
+
+
+
+    <!--分页查询-->
+    <select id="selectAllOrderByPage" resultMap="allOrder">
+         select * from order limit #{pagelimit},#{size};
+    </select>
+
+    <!--删除-->
+    <delete id="deleteOrder" parameterType="int">
+        delete from order where orderId=#{orderId};
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteAll" parameterType="java.util.List">
+        delete from order
+        <where>
+            <if test="orderId!=null and orderId.size() gt 0">
+                orderId in
+                <foreach collection="orderIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+
+    <!--修改-->
+    <update id="updateOrder" parameterType="Order">
+      update order set orderPrice=#{orderPrice},orderState=#{orderState},orderDate=#{orderDate},orderConsigneeName=#{orderConsigneeName},orderConsigneePhone=#{orderConsigneePhone},orderAddress=#{orderAddress},orderDetailedAddress=#{orderDetailedAddress},orderDeliveryTime=#{orderDeliveryTime},orderBuyerName=#{orderBuyerName},orderBuyerPhone=#{orderBuyerPhone},orderGreetingMessage=#{orderGreetingMessage},userId=#{userId} where orderId=#{orderId}
+    </update>
+</mapper>

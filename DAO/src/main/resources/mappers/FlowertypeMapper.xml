@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.FlowertypeDAO">
+
+    <select id="getAllFlowertype" resultType="Flowertype">
+        select *from flowertype
+    </select>
+
+    <!--查询id-->
+    <select id="selectAllFlowertypeId" resultType="Flowertype">
+    select  * from flowertype where flowerTypeId=#{flowerTypeId}
+    </select>
+
+    <!--删除-->
+    <delete id="deleteFlowertype" parameterType="int">
+    delete from flowertype where flowerTypeId=#{flowerTypeId};
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteAll" parameterType="java.util.List">
+    delete from flowertype
+    <where>
+    <if test="cartId!=null and flowerTypeId.size() gt 0">
+    flowerTypeId in
+    <foreach collection="flowerTypeIds" item="item" open="(" separator="," close=")">
+    #{item}
+    </foreach>
+    </if>
+    </where>
+    </delete>
+
+    <!--添加-->
+    <insert id="insertFlowertype" parameterType="Flowertype" useGeneratedKeys="true" keyProperty="flowerTypeId">
+    insert into flowertype(flowerTypeName)
+    values (#{flowerTypeName})
+    </insert>
+    <!--修改-->
+    <update id="updateFlowertype" parameterType="Flowertype">
+    update flowertype set flowerTypeName=#{flowerTypeName} where flowerTypeId=#{flowerTypeId}
+    </update>
+
+</mapper>

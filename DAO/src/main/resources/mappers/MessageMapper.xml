@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.MessageDao"><!--.dao-->
+
+    <!--查询所有用户发给客服的信息-->
+    <select id="selectAllMessage" resultMap="allMessage">
+        select * FROM message m ,messagecontent mc,`user` u
+        <where>
+            m.messageId=mc.messageId and m.senderId=u.userId AND senderId!=999999 and stateId=13
+        </where>
+        ORDER BY messageContentDate DESC
+    </select>
+
+    <resultMap id="allMessage" type="Message">
+        <id column="messageId" property="messageId"></id>
+        <result column="senderId" property="senderId"></result>
+        <result column="recipientId" property="recipientId"></result>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="user" javaType="User">
+            <id property="userId" column="userId"></id>
+            <result property="userPassword" column="userPassword"></result>
+            <result property="userSex" column="userSex"></result>
+            <result property="userName" column="userName"></result>
+            <result property="userMailbox" column="userMailbox"></result>
+            <result property="userPhone" column="userPhone"></result>
+            <result property="userAddress" column="userAddress"></result>
+            <result property="userHeadPortrait" column="userHeadPortrait"></result>
+            <result property="userBirthday" column="userBirthday"></result>
+            <result property="userStateId" column="userStateId"></result>
+            <result property="registerDate" column="registerDate"></result>
+        </association>
+        <!--映射集合，指定属性与属性的类型-->
+        <collection property="messagecontentList" resultMap="messagecontents">
+
+        </collection>
+    </resultMap>
+
+    <resultMap id="messagecontents" type="Messagecontent">
+        <id property="messageContentId" column="messageContentId"></id>
+        <result property="messageContent" column="messageContent"></result>
+        <result property="messageContentDate" column="messageContentDate"></result>
+        <result property="messageId" column="messageId"></result>
+        <result property="stateId" column="stateId"></result>
+    </resultMap>
+
+    <select id="MessageCount" resultType="int">
+        select COUNT(*) FROM message m ,messagecontent mc,`user` u
+        WHERE m.messageId=mc.messageId and m.senderId=u.userId
+        and stateId=13 AND senderId!=999999 ORDER BY messageContentDate DESC
+    </select>
+
+    <!--添加-->
+    <insert id="insertMessage" parameterType="message" useGeneratedKeys="true" keyProperty="messageId">
+        insert into message(senderId,recipientId)
+        values (#{senderId},#{recipientId})
+    </insert>
+
+    <!--判断有没有改数据-->
+    <select id="selectMessage" resultMap="allMessage">
+        select * FROM message m where senderId=#{senderId} and recipientId=#{recipientId}
+    </select>
+
+</mapper>

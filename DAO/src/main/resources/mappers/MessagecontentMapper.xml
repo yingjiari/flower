@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.MessagecontentDao"><!--.dao-->
+
+    <!--根据用户编号查询用户和客服之间的消息信息-->
+    <select id="selectAllMessageContentByUserId" resultMap="allMessageContent">
+        select * FROM message m ,messagecontent mc,`user` u
+        WHERE m.messageId=mc.messageId and m.senderId=u.userId AND
+        (senderId=#{userId} or recipientId=#{userId}) ORDER BY messageContentId
+    </select>
+
+    <resultMap id="allMessageContent" type="messagecontent">
+        <id property="messageContentId" column="messageContentId"></id>
+        <result property="messageContent" column="messageContent"></result>
+        <result property="messageContentDate" column="messageContentDate"></result>
+        <result property="messageId" column="messageId"></result>
+        <result property="stateId" column="stateId"></result>
+        <!--&lt;!&ndash;映射关系，指定属性与属性的类型&ndash;&gt;-->
+        <association property="user" javaType="User">
+            <id property="userId" column="userId"></id>
+            <result property="userPassword" column="userPassword"></result>
+            <result property="userSex" column="userSex"></result>
+            <result property="userName" column="userName"></result>
+            <result property="userMailbox" column="userMailbox"></result>
+            <result property="userPhone" column="userPhone"></result>
+            <result property="userAddress" column="userAddress"></result>
+            <result property="userHeadPortrait" column="userHeadPortrait"></result>
+            <result property="userBirthday" column="userBirthday"></result>
+            <result property="userStateId" column="userStateId"></result>
+            <result property="registerDate" column="registerDate"></result>
+        </association>
+        <!--映射集合，指定属性与属性的类型-->
+        <association property="message" javaType="Message">
+            <id column="messageId" property="messageId"></id>
+            <result column="senderId" property="senderId"></result>
+            <result column="recipientId" property="recipientId"></result>
+        </association>
+    </resultMap>
+
+    <!--添加-->
+    <insert id="insertMessagecontent" parameterType="messagecontent" useGeneratedKeys="true" keyProperty="messageContentId">
+        insert into messagecontent(messageContent,messageContentDate,messageId)
+        values (#{messageContent},NOW(),#{messageId})
+    </insert>
+
+    <update id="updateMessagecontent" parameterType="messagecontent">
+        update messagecontent set stateId=14 WHERE messageId=#{messageId}
+    </update>
+
+</mapper>

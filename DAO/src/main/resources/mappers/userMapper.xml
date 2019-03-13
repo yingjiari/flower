@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.UserDao"><!--.dao-->
+    <!--id应该是接口中的方法，结果类型如没有配置别名则应该使用全名称-->
+
+    <!--查询所有-->
+    <select id="selectAllUser" resultMap="allUser">
+      select u.userId,u.userSex,u.userName,u.userMailbox,u.userPhone,u.userAddress,
+        u.userHeadPortrait,u.userBirthday,u.userStateId,u.registerDate,
+        YEAR(NOW())-year(userBirthday) age,s.stateName from user u,state s
+      <where>
+          u.userStateId=s.stateId
+          <if test="userId!=null and userId!=''">
+              and u.userId=#{userId}
+          </if>
+          <if test="userName!=null and userName!=''">
+              and u.userName like concat(concat('%',#{userName}),'%')
+          </if>
+          <if test="userPhone!=null and userPhone!=''">
+              and u.userPhone like concat(concat('%',#{userPhone}),'%')
+          </if>
+          <if test="userMailbox!=null and userMailbox!=''">
+              and u.userMailbox like concat(concat('%',#{userMailbox}),'%')
+          </if>
+      </where>
+      ORDER BY u.registerDate DESC limit #{skip},#{size}
+    </select>
+    <!--结果集-->
+    <resultMap id="allUser" type="User">
+        <id column="userId" property="userId"></id>
+        <result column="userPassword" property="userPassword"></result>
+        <result column="userSex" property="userSex"></result>
+        <result column="userName" property="userName"></result>
+        <result column="userMailbox" property="userMailbox"></result>
+        <result column="userPhone" property="userPhone"></result>
+        <result column="userAddress" property="userAddress"></result>
+        <result column="userHeadPortrait" property="userHeadPortrait"></result>
+        <result column="userBirthday" property="userBirthday"></result>
+        <result column="userStateId" property="userStateId"></result>
+        <result column="registerDate" property="registerDate"></result>
+        <result column="age" property="age"></result>
+        <association property="state" javaType="State">
+            <id property="stateId" column="stateId"></id>
+            <result property="stateName" column="stateName"></result>
+        </association>
+    </resultMap>
+
+    <select id="getUserCount" resultType="int">
+        select count(*) from user u,state s
+        <where>
+            u.userStateId=s.stateId
+            <if test="userId!=null and userId!=''">
+                and u.userId=#{userId}
+            </if>
+            <if test="userName!=null and userName!=''">
+                and u.userName like concat(concat('%',#{userName}),'%')
+            </if>
+            <if test="userPhone!=null and userPhone!=''">
+                and u.userPhone like concat(concat('%',#{userPhone}),'%')
+            </if>
+            <if test="userMailbox!=null and userMailbox!=''">
+                and u.userMailbox like concat(concat('%',#{userMailbox}),'%')
+            </if>
+        </where>
+    </select>
+
+    <!--查询手机号或邮箱-->
+    <select id="selectByUserPhoneAndMailbox" resultMap="allUser">
+      select  * from user where userPhone=#{userPhoneAndMailbox} or userMailbox=#{userPhoneAndMailbox}
+    </select>
+
+    <!-- 修改用户状态 -->
+    <update id="UpdateUserStateId" parameterType="User">
+        update user set
+        userStateId=#{userStateId}
+        where userId=#{userId}
+    </update>
+
+    <!-- 修改用户密码 -->
+    <update id="UpdateUserPassword" parameterType="User">
+        update user set
+        userPassword=#{userPassword}
+        where userId=#{userId}
+    </update>
+
+    <!-- 修改用户邮箱 -->
+    <update id="UpdateUserMailbox" parameterType="User">
+        update user set
+        userMailbox=#{userMailbox}
+        where userId=#{userId}
+    </update>
+
+    <!-- 多修改用户状态 -->
+    <update id="MoreUpdateUserStateId" parameterType="User">
+        update user set
+        userStateId=#{userStateId}
+        where userId in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <!--修改-->
+    <update id="updateUser" parameterType="User">
+      update user set
+      userSex=#{userSex},userName=#{userName},userMailbox=#{userMailbox},
+      userPhone=#{userPhone},userAddress=#{userAddress},userBirthday=#{userBirthday}
+      where userId=#{userId}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where userId=#{userId};
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteAll" parameterType="java.util.List">
+        delete from user
+        <where>
+           userId in
+           <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+               #{userId}
+           </foreach>
+        </where>
+    </delete>
+
+    <!--添加-->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        insert into user(userPassword,userPhone)
+        values (#{userPassword},#{userPhone})
+    </insert>
+</mapper>

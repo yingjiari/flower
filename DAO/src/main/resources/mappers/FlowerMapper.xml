@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.nf511.flower.dao.FlowerDAO">
+
+    <select id="getFlower" resultMap="Flower_All" parameterType="map">
+        SELECT * FROM
+        flower f,floweruse fu,flowertype ft,flowerbranchnumber fb,state s
+        <where>
+            f.flowerUseId=fu.flowerUseId AND f.flowerTypeId=ft.flowerTypeId AND
+            f.flowerBranchNumberId=fb.flowerBranchNumberId AND f.stateId=s.stateId
+
+            <if test="stateId!=null and stateId!=''">
+                and f.stateId=#{stateId}
+            </if>
+            <if test="flowerId!=null and flowerId!=''">
+                and f.flowerId=#{flowerId}
+            </if>
+            <if test="flowerName!=null and flowerName!=''">
+                and f.flowerName like concat(concat('%',#{flowerName}),'%')
+            </if>
+            <if test="flowerUseName!=null and flowerUseName!=''">
+                and fu.flowerUseName=#{flowerUseName}
+            </if>
+            <if test="flowerTypeName!=null and flowerTypeName!=''">
+                and ft.flowerTypeName=#{flowerTypeName}
+            </if>
+            <if test="flowerBranchNumber!=null and flowerBranchNumber!=''">
+                and fb.flowerBranchNumber=#{flowerBranchNumber}
+            </if>
+            <if test="flowerMaterials!=null and flowerMaterials!=''">
+                and f.flowerMaterials like concat(concat('%',#{flowerMaterials}),'%')
+            </if>
+             ORDER BY
+            <if test="rank==1">
+                flowerId DESC
+            </if>
+            <if test="rank==2">
+                flowerName DESC
+            </if>
+            <if test="rank==3">
+                flowerPrice DESC
+            </if>
+            <if test="rank==4">
+                flowerInventory DESC
+            </if>
+            <if test="rank==5">
+                flowerSalesVolume DESC
+            </if>
+            <if test="rank==6">
+                flowerTotalSales DESC
+            </if>
+            <if test="rank==7">
+                flowerCollectVolume DESC
+            </if>
+            <if test="rank==8">
+                flowerDateTime DESC
+            </if>
+            <if test="rank==9">
+                stateId DESC
+            </if>
+            <if test="rank==11">
+                flowerId
+            </if>
+            <if test="rank==12">
+                flowerName
+            </if>
+            <if test="rank==13">
+                flowerPrice
+            </if>
+            <if test="rank==14">
+                flowerInventory
+            </if>
+            <if test="rank==15">
+                flowerSalesVolume
+            </if>
+            <if test="rank==16">
+                flowerTotalSales
+            </if>
+            <if test="rank==17">
+                flowerCollectVolume
+            </if>
+            <if test="rank==18">
+                flowerDateTime
+            </if>
+            <if test="rank==19">
+                stateId
+            </if>
+        </where>
+         limit #{skip},#{size}
+    </select>
+    <resultMap id="Flower_All" type="Flower">
+        <id property="flowerId" column="flowerId"></id>
+        <result property="flowerTypeId" column="flowerTypeId"></result>
+        <result property="flowerUseId" column="flowerUseId"></result>
+        <result property="flowerBranchNumberId" column="flowerBranchNumberId"></result>
+        <result property="flowerMarketPrice" column="flowerMarketPrice"></result>
+        <result property="flowerPrice" column="flowerPrice"></result>
+        <result property="flowerInventory" column="flowerInventory"></result>
+        <result property="flowerImageName" column="flowerImageName"></result>
+        <result property="flowerName" column="flowerName"></result>
+        <result property="flowerDateTime" column="flowerDateTime"></result>
+        <result property="flowerMaterials" column="flowerMaterials"></result>
+        <result property="flowerPackaging" column="flowerPackaging"></result>
+        <result property="flowerLanguage" column="flowerLanguage"></result>
+        <result property="flowerIntroduce" column="flowerIntroduce"></result>
+        <result property="stateId" column="stateId"></result>
+        <result property="flowerSalesVolume" column="flowerSalesVolume"></result>
+        <result property="flowerTotalSales" column="flowerTotalSales"></result>
+        <result property="flowerCollectVolume" column="flowerCollectVolume"></result>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="flowertype" javaType="Flowertype">
+            <id property="flowerTypeId" column="flowerTypeId"></id>
+            <result property="flowerTypeName" column="flowerTypeName"></result>
+        </association>
+        <association property="floweruse" javaType="Floweruse">
+            <id property="flowerUseId" column="flowerUseId"></id>
+            <result property="flowerUseName" column="flowerUseName"></result>
+        </association>
+        <association property="flowerbranchnumber" javaType="Flowerbranchnumber">
+            <id property="flowerBranchNumberId" column="flowerBranchNumberId"></id>
+            <result property="flowerBranchNumber" column="flowerBranchNumber"></result>
+        </association>
+        <association property="state" javaType="State">
+            <id property="stateId" column="stateId"></id>
+            <result property="stateName" column="stateName"></result>
+        </association>
+    </resultMap>
+
+    <select id="getFlowerCount" resultType="int">
+        select count(*) from flower f,floweruse fu,flowertype ft,flowerbranchnumber fb,state s
+        <where>
+            f.flowerUseId=fu.flowerUseId AND f.flowerTypeId=ft.flowerTypeId AND
+            f.flowerBranchNumberId=fb.flowerBranchNumberId AND f.stateId=s.stateId
+
+            <if test="stateId!=null and stateId!=''">
+                and f.stateId=#{stateId}
+            </if>
+            <if test="flowerId!=null and flowerId!=''">
+                and f.flowerId=#{flowerId}
+            </if>
+            <if test="flowerName!=null and flowerName!=''">
+                and f.flowerName like concat(concat('%',#{flowerName}),'%')
+            </if>
+            <if test="flowerUseName!=null and flowerUseName!=''">
+                and fu.flowerUseName=#{flowerUseName}
+            </if>
+            <if test="flowerTypeName!=null and flowerTypeName!=''">
+                and ft.flowerTypeName=#{flowerTypeName}
+            </if>
+            <if test="flowerBranchNumber!=null and flowerBranchNumber!=''">
+                and fb.flowerBranchNumber=#{flowerBranchNumber}
+            </if>
+            <if test="flowerMaterials!=null and flowerMaterials!=''">
+                and f.flowerMaterials like concat(concat('%',#{flowerMaterials}),'%')
+            </if>
+
+        </where>
+    </select>
+
+    <!--添加-->
+    <insert id="insertFlower" parameterType="Flower" useGeneratedKeys="true" keyProperty="flowerId">
+        insert into flower(flowerTypeId,flowerUseId,flowerBranchNumberId,flowerMarketPrice,
+        flowerPrice,flowerInventory,flowerImageName,flowerName,flowerMaterials,
+        flowerPackaging,flowerLanguage,flowerIntroduce)
+        values (#{flowerTypeId},#{flowerUseId},#{flowerBranchNumberId},#{flowerMarketPrice},
+        #{flowerPrice},#{flowerInventory},#{flowerImageName},#{flowerName},
+        #{flowerMaterials},#{flowerPackaging},#{flowerLanguage},#{flowerIntroduce})
+    </insert>
+
+    <!-- 修改鲜花状态 -->
+    <update id="UpdateFlowerStateId" parameterType="Flower">
+        update flower set
+        stateId=#{stateId}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!-- 修改鲜花收藏量 -->
+    <update id="UpdateFlowerCollectVolume" parameterType="Flower">
+        update flower set
+        flowerCollectVolume=#{flowerCollectVolume}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!-- 修改鲜花销售量 -->
+    <update id="UpdateFlowerSalesVolume" parameterType="Flower">
+        update flower set
+        flowerSalesVolume=#{flowerSalesVolume}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!-- 修改鲜花销售金额 -->
+    <update id="UpdateFlowerTotalSales" parameterType="Flower">
+        update flower set
+        flowerTotalSales=#{flowerTotalSales}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!-- 多修改鲜花状态 -->
+    <update id="MoreUpdateFlowerStateId" parameterType="Flower">
+        update flower set
+        stateId=#{stateId}
+        where flowerId in
+        <foreach collection="flowerIds" item="flowerId" open="(" separator="," close=")">
+            #{flowerId}
+        </foreach>
+    </update>
+
+    <!-- 修改鲜花库存 -->
+    <update id="UpdateFlowerInventory" parameterType="Flower">
+        update flower set
+        flowerInventory=#{flowerInventory}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!-- 修改鲜花信息 -->
+    <update id="updateFlower" parameterType="Flower">
+        update flower set
+        flowerTypeId=#{flowerTypeId},flowerUseId=#{flowerUseId},flowerBranchNumberId=#{flowerBranchNumberId},
+        flowerMarketPrice=#{flowerMarketPrice},flowerPrice=#{flowerPrice},flowerInventory=#{flowerInventory},
+        flowerName=#{flowerName},flowerMaterials=#{flowerMaterials},flowerPackaging=#{flowerPackaging},
+        flowerLanguage=#{flowerLanguage},flowerIntroduce=#{flowerIntroduce}
+        where flowerId=#{flowerId}
+    </update>
+
+    <!--删除-->
+    <delete id="DeleteFlower" parameterType="int">
+        delete from flower where flowerId=#{flowerId};
+    </delete>
+
+    <!--批量删除-->
+    <delete id="MoreDeleteFlower" parameterType="java.util.List">
+        delete from flower
+        where flowerId in
+        <foreach collection="flowerIds" item="flowerId" open="(" separator="," close=")">
+              #{flowerId}
+        </foreach>
+    </delete>
+
+
+
+</mapper>

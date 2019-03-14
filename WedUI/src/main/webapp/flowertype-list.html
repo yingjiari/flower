@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+		<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+
+		<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+		<title>商品列表</title>
+		<link rel="stylesheet" href="lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+		<style type="text/css">
+			.col-sm-9 {
+				width: 55%
+			}
+			
+			.form-horizontal {
+				width: 500px;
+			}
+			
+			.selectconditiondiv {
+				margin-bottom: 10px;
+			}
+			
+			.selectconditiondiv span {
+				color: orange;
+			}
+			
+			#limitdiv {
+				float: left;
+				padding-bottom: 20px;
+			}
+			
+			#limitdiv .select {
+				width: 50px;
+			}
+			
+			.btn-stop {
+				color: #fff;
+				background-color: #999;
+				border-color: #999;
+			}
+			
+			.btn-start {
+				color: #fff;
+				background-color: #5eb95e;
+				;
+				border-color: #5eb95e;
+				;
+			}
+			
+			.sorting_asc {
+				background-image: url(img/sort_asc.png);
+			}
+			
+			.sorting {
+				background-image: url(img/sort_both.png);
+			}
+			
+			.sorting_desc {
+				background-image: url(img/sort_desc.png);
+			}
+			
+			.sorting_asc,
+			.sorting_desc,
+			.sorting {
+				cursor: pointer;
+				background-repeat: no-repeat;
+				background-position: right center;
+			}
+		</style>
+	</head>
+
+	<body class="pos-r">
+		<div>
+			<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 鲜花管理 <span class="c-gray en">&gt;</span> 鲜花类型列表
+				<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+			</nav>
+			<div class="page-container">
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l">
+						<a class="btn btn-primary radius" onclick="flower_add('flower-add.html')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加鲜花</a>
+						<a class="btn btn-primary radius" onclick="FlowerPushCsv()"><i class="Hui-iconfont">&#xe600;</i> 导出到csv</a>
+					</span>
+				</div>
+				<div class="mt-20">
+					
+
+					<table class="table table-border table-bordered table-bg table-hover table-sort">
+						<thead>
+							<tr class="text-c">
+								<th width="40">
+									<a style='text-decoration:none' class='ml-5' onclick='check_all()' href='javascript:;' title='全选'><i class='Hui-iconfont'>&#xe676;</i></a>
+									<a style='text-decoration:none' class='ml-5' onclick='totally_unselected()' href='javascript:;' title='全不选'><i class='Hui-iconfont'>&#xe677;</i></a>
+									<a style='text-decoration:none' class='ml-5' onclick='reverse_election()' href='javascript:;' title='反选'><i class='Hui-iconfont'>&#xe68f;</i></a>
+								</th>
+								<th class="sorting">ID</th>
+								<th class="sorting">鲜花类型</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="mytable">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="float: right; margin-right: 30px;">
+			<div id="demo0" style="text-align: center;"></div>
+		</div>
+
+		<div id="addproductamountdiv" style="display: none;">
+			<form id="addproductamountform" class="form form-horizontal">
+				<h4>你要添加的商品是：<span style="color: orangered;" id="addproductname"></span></h4>
+				<div class="row cl">
+					<label class="form-label col-xs-4"><span class="c-red">*</span>输入你要添加的数量：</label>
+					<div class="col-xs-8 col-sm-9">
+						<input type="number" min="1" id="addflowerInventory" name="addflowerInventory" class="input-text" style="width: 100%;">
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+
+		<!--请在下方写此页面业务相关的脚本-->
+		<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+		<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+		<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+		<script type="text/javascript" src="js/dialog.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<link rel="stylesheet" href="css/layui.css" />
+		<script type="text/javascript" src="js/layui.all.js"></script>
+		<script type="text/javascript">
+
+			myselect();
+
+			function myselect() {
+
+				$.ajax({
+					url: "http://localhost:8080/Flowertype/getAllFlowertype",
+					success: function(data) {
+						if(data.code == 1) {
+							$("#mytable tr").remove();
+							myTableDataHtml = "";
+							$.each(data.data, function(index, obj) {
+								myTableDataHtml += "<tr class='text-c va-m'><td><input type='checkbox' name='flowerTypeId' class='checkbox' value=\"" + obj.flowerTypeId + "\"></td>" +
+									"<td class='flowerTypeId'>" + obj.flowerTypeId + "</td>" +
+									"<td class='text-l'>" + obj.flowerTypeName + "</td>" +
+									"<td class='td-manage'>" +
+									" <a style='text-decoration:none' class='ml-5' onclick='flower_edit(" + obj.flowerId + ")' href='javascript:;' title='编辑'><i class='Hui-iconfont'>&#xe6df;</i></a>" +
+									" </td></tr>";
+
+							});
+							$("#mytable").append(myTableDataHtml);
+
+							
+						}
+					}
+				});
+
+			}
+			
+			
+			/*全选*/
+			function check_all() {
+				$("#mytable :checkbox").prop("checked", true);
+			}
+			/*全不选*/
+			function totally_unselected() {
+				$("#mytable :checkbox").prop("checked", false);
+			}
+			/*反选*/
+			function reverse_election() {
+				$("#mytable :checkbox").each(function() {
+					$(this).prop("checked", !$(this).prop("checked"));
+				});
+			}
+
+			function FlowerPushCsv() {
+				
+//	        	location.href = "http://localhost:8080/excelController/FlowerPushCsv?skip=0&size=99999999&" + selectcondition;
+
+			}
+			$(".sorting").click(function() {
+				console.log(this);
+			})
+		</script>
+
+	</body>
+
+</html>

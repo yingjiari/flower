@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+		<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+		<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+		<title>用户查看</title>
+		<style>
+			.pd-20:hover {
+				background: #D0D4DC;
+			}
+			
+			.messageContent {
+				display: none;
+			}
+			
+			.messageContent:first-child {
+				display: block;
+			}
+			
+			.count {
+				display: none;
+				width: 7px;
+				float: right;
+				margin-top: -18px;
+			}
+			
+			.count:last-child {
+				display: block;
+			}
+			
+			#myMessageData {
+				width: 35%;
+				float: left;
+				overflow-y: scroll;
+				height: 557.2px;
+			}
+			
+			#messageContent {
+				width: 65%;
+				height: 400px;
+				background-color: #D0D4DC;
+				float: right;
+				overflow-y: scroll;
+			}
+			
+			.messageContentDate {
+				float: right;
+				margin-top: -49px;
+				font-size: x-small;
+			}
+			
+			.active {
+				background: #D0D4DC;
+			}
+			
+			#SendMessageBox {
+				float: right;
+				width: 65%;
+				height: 157.2px;
+				background-color: #ffffff;
+			}
+			
+			.col-sm-9 {
+				width: 100%;
+			}
+			
+			.Content {
+				background-color: #ffffff;
+				border-radius: 10px;
+				font-size: 16px;
+				padding: 8px 6px;
+				width: auto;
+				display: inline-block !important;
+				margin-left: 30px;
+			}
+			
+			.serviceimg {
+				float: right !important;
+			}
+			
+			.serviceContent {
+				float: right;
+				margin-right: 30px;
+			}
+		</style>
+	</head>
+
+	<body style="background: #EEEEEE;overflow-y: hidden;">
+		<div id="myMessageData">
+
+		</div>
+		<div id="choosediv" style="display:none;">
+			<div id="messageContent">
+
+			</div>
+			<div id="SendMessageBox">
+				<div class="formControls col-xs-8 col-sm-9">
+					<textarea class="input-text" style="height: 110px; margin-top: 10px;border: 0;" cols="60"></textarea>
+				</div>
+				<a class="btn btn-primary radius" style="position: absolute;right: 10px;bottom: 10px; " onclick="sender()">发送</a>
+			</div>
+		</div>
+		<div id="NOchoosediv" style="width: 70%;height: 557.2px;background-color: #FFFFFF;float: right;">
+
+		</div>
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+		<script type="text/javascript" src="js/template-web.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+
+		<!--请在下方写此页面业务相关的脚本-->
+		<script type="text/html" id="messageTemplate">
+			{{each list as message i}}
+			<div class="cl pd-20" style="padding: 10px;" onclick="messageContentByUserId(this,{{message.user.userId}})">
+				<input hidden="hidden" value="{{message.user.userId}}" class="userId" />
+				<input hidden="hidden" value="{{message.messageId}}" class="messageId" />
+				<span class="userHeadPortrait" name="userHeadPortrait">
+					<img class="avatar size-XL l" style="border-radius: 100px;" src="img/user/{{message.user.userHeadPortrait}}">
+				</span>
+				<dl style="margin-left:80px;">
+					<dt>
+						<span class="f-18" class="userName">{{message.user.userName}}</span>
+					</dt>
+					<span>
+					{{each message.messagecontentList as messagecontentlist index}}
+						<span class="messageContent">
+							<dd class="pt-10 f-12 {{message.user.userId}}" style="margin-left:0;color: #7E7D7F;" class="flowerIntroduce">{{messagecontentlist.messageContent}}</dd>
+							<span class="messageContentDate">{{messagecontentlist.messageContentDate}}</span>
+					</span>
+					<span class="badge badge-danger count">{{index+1}}</span> {{/each}}
+
+					</span>
+				</dl>
+
+			</div>
+			{{/each}}
+		</script>
+		<script type="text/html" id="messageContentTemplate">
+			{{each list as messagecontent i}}
+			<div style="margin:20px" class="user">
+				<input hidden="hidden" value="{{messagecontent.message.senderId}}" class="senderId" />
+				<img class="avatar size-XL l" style="border-radius: 100px; width: 40px; height: 40px;" src="img/user/{{messagecontent.user.userHeadPortrait}}">
+				<div class="Content">{{messagecontent.messageContent}}</div>
+			</div>
+			{{/each}}
+		</script>
+
+		<script type="text/javascript">
+			selectAllMessage();
+
+			function selectAllMessage() {
+				$.ajax({
+					url: 'http://localhost:8080/Message/selectAllMessage',					
+					success: function(data) {
+						$("#myMessageData .pd-20").remove()
+						$("#myMessageData").append(template("messageTemplate", {
+							list: data.data
+						}));
+
+						//开始截取时间
+						var messageContentDateList = document.getElementsByClassName("messageContentDate");
+						for(var messageContentDate = 0; messageContentDate < messageContentDateList.length; messageContentDate++) {
+							$(messageContentDateList[messageContentDate]).html($(messageContentDateList[messageContentDate]).html().substring(5));
+							$(messageContentDateList[messageContentDate]).html($(messageContentDateList[messageContentDate]).html().substring(0, $(messageContentDateList[messageContentDate]).html().length - 2));
+						}
+						//结束截取时间
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+			}
+
+			function messageContentByUserId(obj, userId) {
+				$(obj).siblings('.pd-20').removeClass('active');
+				$(obj).addClass('active');
+				
+				$(obj).find(".count").css("display", "none");
+				
+				$("#NOchoosediv").css("display", "none");
+				$("#choosediv").css("display", "block");
+				
+				var messageId=$(".active .messageId").val();
+				
+				$.ajax({
+					url: 'http://localhost:8080/MessageContent/updateMessagecontent',
+					data: {
+						messageId:messageId
+					},
+					success: function(data) {
+						
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+				
+
+				$.ajax({
+					url: 'http://localhost:8080/MessageContent/selectAllMessageContentByUserId',
+					data: {
+						userId: userId
+					},
+					success: function(data) {
+						$("#messageContent .user").remove()
+						$("#messageContent").append(template("messageContentTemplate", {
+							list: data.data
+						}));
+
+						//让客服在右边
+
+						var senderIdList = document.getElementsByClassName("senderId");
+						for(var senderId = 0; senderId < senderIdList.length; senderId++) {
+							if(senderIdList[senderId].value == "999999") {
+								$(senderIdList[senderId]).parents(".user").css("height", "40px");
+								$(senderIdList[senderId]).parents(".user").find("img").css("float", "right");
+								$(senderIdList[senderId]).parents(".user").find("img").addClass('serviceimg');
+								$(senderIdList[senderId]).parents(".user").find("div").addClass('serviceContent');
+							}
+						}
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+			}
+
+			function sender() {
+				var recipientId = $(".active input").val();
+
+				$.ajax({
+					url: 'http://localhost:8080/Message/selectMessage',
+					data: {
+						senderId: 999999,
+						recipientId: recipientId
+					},
+					success: function(data) {
+						var messageContent = $(".input-text").val();
+						if(data.data == null) {
+							$.ajax({
+								url: 'http://localhost:8080/Message/insertMessage',
+								data: {
+									senderId: 999999,
+									recipientId: recipientId
+								},
+								success: function(data) {
+									$.ajax({
+										url: 'http://localhost:8080/Message/selectMessage',
+										data: {
+											senderId: 999999,
+											recipientId: recipientId
+										},
+										success: function(data) {
+											var messageId = data.data.messageId
+											$.ajax({
+												url: 'http://localhost:8080/MessageContent/insertMessagecontent',
+												data: {
+													messageContent: messageContent,
+													messageId: messageId
+												},
+												success: function(data) {
+
+													$(".input-text").val("");
+
+													var a = "<div style='margin: 20px; height: 40px;' class='user'>" +
+														"<input hidden='hidden' value='999999' class='senderId'>" +
+														"<img class='avatar size-XL l serviceimg' style='border-radius: 100px; width: 40px; height: 40px; float: right;' src='img/user/timg.jpg'>" +
+														"<div class='Content serviceContent'>" + messageContent + "</div></div>";
+
+													console.log(a)
+
+													$("#messageContent").append(a);
+													$("." + recipientId).html(messageContent);
+												},
+												error: function(data) {
+													console.log(data.msg);
+												},
+											});
+										},
+										error: function(data) {
+											console.log(data.msg);
+										},
+									});
+								},
+								error: function(data) {
+									console.log(data.msg);
+								},
+							});
+						} else {
+							var messageId = data.data.messageId;
+							$.ajax({
+								url: 'http://localhost:8080/MessageContent/insertMessagecontent',
+								data: {
+									messageContent: messageContent,
+									messageId: messageId
+								},
+								success: function(data) {
+									$(".input-text").val("");
+									var a = "<div style='margin: 20px; height: 40px;' class='user'>" +
+										"<input hidden='hidden' value='999999' class='senderId'>" +
+										"<img class='avatar size-XL l serviceimg' style='border-radius: 100px; width: 40px; height: 40px; float: right;' src='img/user/timg.jpg'>" +
+										"<div class='Content serviceContent'>" + messageContent + "</div></div>";
+
+									console.log(a)
+
+									$("#messageContent").append(a);
+									$("." + recipientId).html(messageContent);
+								},
+								error: function(data) {
+									console.log(data.msg);
+								},
+							});
+						}
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+
+			}
+
+			$("body").keydown(function() {
+				if(event.keyCode == "13") { //keyCode=13是回车键；数字不同代表监听的按键不同
+					sender();
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

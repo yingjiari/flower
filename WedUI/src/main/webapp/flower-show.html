@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+		<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+		<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+		<title>鲜花查看</title>
+	</head>
+
+	<body>
+		<div class="cl pd-20" style=" background-color:#5bacb6">
+			<span id="flowerImageName" name="flowerImageName">
+				
+			</span>	
+			<dl style="margin-left:80px; color:#fff">
+				<dt>
+					<span class="f-18" id="flowerName" name="flowerName"></span>
+				</dt>
+				<dd class="pt-10 f-12" style="margin-left:0" id="flowerIntroduce"></dd>
+			</dl>
+		</div>
+		<div class="pd-20">
+			<table class="table">
+				<tbody>
+					<tr>
+						<th class="text-r" width="80">鲜花类型：</th>
+						<td id="flowerTypeId"></td>
+					</tr>
+					<tr>
+						<th class="text-r">鲜花用途：</th>
+						<td id="flowerUseId"></td>
+					</tr>
+					<tr>
+						<th class="text-r">鲜花枝数：</th>
+						<td id="flowerBranchNumberId"></td>
+					</tr>
+					<tr>
+						<th class="text-r">市场价格：</th>
+						<td id="flowerMarketPrice"></td>
+					</tr>
+					<tr>
+						<th class="text-r">店铺价格：</th>
+						<td id="flowerPrice"></td>
+					</tr>
+					<tr>
+						<th class="text-r">库存：</th>
+						<td id="flowerInventory"></td>
+					</tr>
+					<tr>
+						<th class="text-r">销售量：</th>
+						<td id="flowerSalesVolume"></td>
+					</tr>
+					<tr>
+						<th class="text-r">销售总额：</th>
+						<td id="flowerTotalSales"></td>
+					</tr>
+					
+					<tr>
+						<th class="text-r">添加日期：</th>
+						<td id="flowerDateTime"></td>
+					</tr>
+					<tr>
+						<th class="text-r">鲜花材料：</th>
+						<td id="flowerMaterials"></td>
+					</tr>
+					<tr>
+						<th class="text-r">鲜花包装：</th>
+						<td id="flowerPackaging"></td>
+					</tr>
+					<tr>
+						<th class="text-r">花语：</th>
+						<td id="flowerLanguage"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+
+		<!--请在下方写此页面业务相关的脚本-->
+
+		<script type="text/javascript">
+			getFlowerById();
+
+			function getFlowerById() {
+				var urlflowerId = location.search; //获取url中"?"符后的字串 
+
+				$.ajax({
+					url: 'http://localhost:8080/Flower/getFlower',
+					data: {
+						flowerId:15,
+						skip: 0,
+						size: 1,
+						rank:1
+					},
+					dataType: "json",
+					type: "get",
+					success: function(data) {
+						$.each(data.data, function(index,obj) {
+							console.log(data.data);
+							$("#flowerImageName").html("<img class='avatar size-XL l' src='img/flower/"+obj.flowerImageName+"'>");
+							$("#flowerName").html(obj.flowerName);
+							$("#flowerIntroduce").html(obj.flowerIntroduce);
+							$("#flowerTypeId").html(obj.flowertype.flowerTypeName);
+							$("#flowerUseId").html(obj.floweruse.flowerUseName);
+							$("#flowerBranchNumberId").html(obj.flowerbranchnumber.flowerBranchNumber+"枝");
+							$("#flowerMarketPrice").html(obj.flowerMarketPrice+"元");
+							$("#flowerPrice").html(obj.flowerPrice+"元");
+							$("#flowerInventory").html(obj.flowerInventory);
+							$("#flowerSalesVolume").html(obj.flowerSalesVolume);
+							$("#flowerTotalSales").html(obj.flowerTotalSales+"元");							
+							$("#flowerDateTime").html(obj.flowerDateTime);
+							$("#flowerMaterials").html(obj.flowerMaterials);
+							$("#flowerPackaging").html(obj.flowerPackaging);
+							$("#flowerLanguage").html(obj.flowerLanguage);
+							
+						});
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+			}
+		</script>
+
+	</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+		<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+
+		<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+		<title>订单列表</title>
+		<link rel="stylesheet" href="lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+		<style type="text/css">
+			.col-sm-9 {
+				width: 55%
+			}
+			
+			.form-horizontal {
+				width: 500px;
+			}
+			
+			.selectconditiondiv {
+				margin-bottom: 10px;
+			}
+			
+			.selectconditiondiv span {
+				color: orange;
+			}
+			
+			#limitdiv {
+				float: left;
+				padding-bottom: 20px;
+			}
+			
+			#limitdiv .select {
+				width: 50px;
+			}
+			
+			.btn-stop {
+				color: #fff;
+				background-color: #999;
+				border-color: #999;
+			}
+			
+			.btn-start {
+				color: #fff;
+				background-color: #5eb95e;				
+				border-color: #5eb95e;	
+			}
+		</style>
+	</head>
+
+	<body class="pos-r">
+		<div>
+			<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 鲜花管理 <span class="c-gray en">&gt;</span> 订单列表
+				<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+			</nav>
+			<div class="page-container">
+				<div class="text-c">
+					<form id="selectconditionform">
+						<div class="selectconditiondiv">
+							<label for="orderId">订单编号:</label>
+							<input type="text" name="orderId" id="orderId" placeholder="订单编号" style="width:250px" class="input-text">
+							<label>订单状态:</label>
+							<span class="select-box" style="width:250px">
+								<select id="orderState" name="orderState" class="select">
+									<option value="8">全部状态</option>
+									<option value="3">待付款</option>
+									<option value="4">送货完毕</option>
+									<option value="5">今日配送</option>
+									<option value="6">已取消</option>
+									<option value="7">待评价</option>
+								</select>
+							</span>
+						</div>
+						<div class="selectconditiondiv">
+							<button class="btn btn-success" onclick="myselect()" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜订单</button>
+							<button class="btn btn-success" onclick="empty()" type="button">清空所有选项</button>
+						</div>
+					</form>
+
+				</div>
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l">
+						<!--<a href="javascript:;" onclick="user_more(this)" class="btn btn-start radius"><i class="Hui-iconfont">&#xe603;</i> <span>批量启用</span></a>
+						<a href="javascript:;" onclick="user_more(this)" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6de;</i> <span>批量停用</span></a>-->
+						<!--<a href="javascript:;" onclick="flower_more(this)" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> <span>批量删除</span></a>-->
+						<a class="btn btn-primary radius" onclick="OrderPushCsv()"><i class="Hui-iconfont">&#xe600;</i> 导出到csv</a>
+					</span>
+					<span class="r">共有数据：<strong id="userCunot"></strong> 条</span>
+				</div>
+				<div class="mt-20">
+					<div class="dataTables_length" id="limitdiv">
+						<label>每页显示 
+							<select name="limit" id="limit" class="select" onclick="myselect()">
+								<option value="3">3</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+							</select> 条
+						</label>
+					</div>
+
+					<table class="table table-border table-bordered table-bg table-hover table-sort">
+						<thead>
+							<tr class="text-c">
+								<th width="40">
+									<a style='text-decoration:none' class='ml-5' onclick='check_all()' href='javascript:;' title='全选'><i class='Hui-iconfont'>&#xe676;</i></a>
+									<a style='text-decoration:none' class='ml-5' onclick='totally_unselected()' href='javascript:;' title='全不选'><i class='Hui-iconfont'>&#xe677;</i></a>
+									<a style='text-decoration:none' class='ml-5' onclick='reverse_election()' href='javascript:;' title='反选'><i class='Hui-iconfont'>&#xe68f;</i></a>
+								</th>
+								<th>ID</th>
+								<th>价格</th>
+								<th>时间</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="mytable">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="float: right; margin-right: 30px;">
+			<div id="demo0" style="text-align: center;"></div>
+		</div>
+
+		<div id="addproductamountdiv" style="display: none;">
+			<form id="addproductamountform" class="form form-horizontal">
+				<h4>你要添加的商品是：<span style="color: orangered;" id="addproductname"></span></h4>
+				<div class="row cl">
+					<label class="form-label col-xs-4"><span class="c-red">*</span>输入你要添加的数量：</label>
+					<div class="col-xs-8 col-sm-9">
+						<input type="number" min="1" id="addflowerInventory" name="addflowerInventory" class="input-text" style="width: 100%;">
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+
+		<!--请在下方写此页面业务相关的脚本-->
+		<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+		<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+		<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+		<script type="text/javascript" src="js/dialog.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<link rel="stylesheet" href="css/layui.css" />
+		<script type="text/javascript" src="js/layui.all.js"></script>
+		<script type="text/javascript">
+			myselect();
+
+			function myselect() {
+
+				var selectcondition = $("#selectconditionform").serialize();
+				if($('#orderId').val() == "" || $('#orderId').val() == null) {
+					selectcondition = selectcondition.substring(9);
+				}
+
+				console.log(selectcondition);
+
+				$.ajax({
+					url: "http://localhost:8080/order/getOrderCount",
+					type: "post",
+					data: selectcondition,
+					dataType: "json",
+					success: function(count) {
+						$("#userCunot").html(count.data);
+						layui.use(['laypage', 'layer'], function() {
+							var laypage = layui.laypage,
+								layer = layui.layer;
+							//总页数大于页码总数
+							laypage.render({
+								elem: 'demo0',
+								limit: $("#limit").val(),
+								count: count.data,
+								jump: function(obj) {
+									var skip = "&skip=" + (obj.curr - 1) * obj.limit;
+									var size = "&size=" + obj.limit;
+									var selectconditionPage = (selectcondition+skip + size);
+									$.ajax({
+										url: "http://localhost:8080/order/selectAllOrderByPage",
+										data: selectconditionPage,
+										success: function(data) {
+											if(data.code == 1) {
+												$("#mytable tr").remove();
+												myTableDataHtml = "";
+												$.each(data.data, function(index, obj) {
+													myTableDataHtml += "<tr class='text-c'><td><input type='checkbox' name='orderId' class='checkbox' value=\"" + obj.orderId + "\"></td>" +
+														"<td><u style='cursor:pointer' class='orderId' onclick='order_show(" + obj.orderId + ")'>" + obj.orderId + "</u></td>" +
+														"<td>" + obj.orderPrice + "</td>" +
+														"<td>" + obj.orderDate + "</td>" +
+														"<td class='state'>" + obj.state.stateName + "</td>"+
+														"<td class='operation'></td></tr>";
+												});
+												$("#mytable").append(myTableDataHtml);
+																								
+												//开始加载不同的状态
+												var statelist = document.getElementsByClassName("state");
+												for(var states = 0; states < statelist.length; states++) {
+													console.log(statelist[states].innerText);
+													if(statelist[states].innerText == "待付款") {
+														$(statelist[states]).parents("tr").find(".operation").prepend("等待用户付款");
+													}
+													if(statelist[states].innerText == "已取消") {
+														$(statelist[states]).parents("tr").find(".operation").prepend("用户也取消订单");
+													}
+													if(statelist[states].innerText == "已付款") {
+														var orderId = $(statelist[states]).parents("tr").find(".orderId").html();
+														console.log(orderId);
+														$(statelist[states]).parents("tr").find(".operation").prepend("<a style='text-decoration:none' onClick='order_start(this," + orderId + ")' href='javascript:;'>点击发货</a>");													
+													}
+													if(statelist[states].innerText == "送货完毕") {
+														$(statelist[states]).parents("tr").find(".operation").prepend("交易完毕");													
+													}
+													if(statelist[states].innerText == "送货中") {
+														$(statelist[states]).parents("tr").find(".operation").prepend("等待用户收货");													
+													}
+												}
+												//结束加载不同的状态
+												
+											}
+										}
+									});
+
+								}
+							})
+						})
+					}
+				});
+
+			}
+
+			/*鲜花-查看*/
+			function user_show(userId) {
+				layer_show(userId, 'user-show.html?userId=' + userId, '360', '500');
+			}
+			/*清空*/
+			function empty() {
+				$("#orderId").val("");
+				$("#orderState").val("");
+				myselect();
+			}
+			
+			function order_start(obj,orderId){
+				
+				
+				$.ajax({
+						type: 'post',
+						url: 'http://localhost:8080/order/UpdateOrderState',
+						dataType: 'json',
+						data: {
+							orderState: "16",
+							orderId: orderId
+						},
+						success: function(data) {
+							$(obj).parents("tr").find(".state").html("送货中");
+							$(obj).find("a").html("");
+						},
+						error: function(data) {
+							console.log(data.msg);
+						},
+					});
+			}
+
+		
+		
+			/*全选*/
+			function check_all() {
+				$("#mytable :checkbox").prop("checked", true);
+			}
+			/*全不选*/
+			function totally_unselected() {
+				$("#mytable :checkbox").prop("checked", false);
+			}
+			/*反选*/
+			function reverse_election() {
+				$("#mytable :checkbox").each(function() {
+					$(this).prop("checked", !$(this).prop("checked"));
+				});
+			}
+			
+			
+			
+			function OrderPushCsv(){
+				
+				var selectcondition = $("#selectconditionform").serialize();
+
+				if($('#orderId').val() == "" || $('#orderId').val() == null) {
+					selectcondition = selectcondition.substring(9);
+				}
+				console.log(selectcondition);
+				
+				location.href="http://localhost:8080/excelController/OrderPushCsv?skip=0&size=99999999&"+selectcondition;
+			
+			}
+			
+		</script>
+
+	</body>
+
+</html>

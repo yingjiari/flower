@@ -1,0 +1,369 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="Bookmark" href="/favicon.ico">
+		<link rel="Shortcut Icon" href="/favicon.ico" />
+		<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+
+<![endif]-->
+		<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+		<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+		<!--/meta 作为公共模版分离出去-->
+
+		<link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+
+		<style type="text/css">
+			.col-sm-9 {
+				width: 55%
+			}
+			
+			#bcd {
+				width: 220px;
+				height: 240px;
+				border: 1px solid red;
+			}
+			
+			img {
+				width: 220px;
+				height: 240px;
+			}
+			
+			#file {
+				width: 60px;
+				height: 20px;
+				background-color: red;
+			}
+			.none{
+				display: none;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="page-container">
+			<form action="" method="post" class="form form-horizontal" id="form-article-add">
+				<input type="hidden" name="flowerId" id="flowerId" />
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>鲜花名称：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="" id="flowerName" name="flowerName">
+					</div>
+					<span style="line-height: 31px;"></span>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>鲜花类型：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="select-box">
+							<select id="flowerTypeId" name="flowerTypeId" class="select">
+								
+							</select>
+						</span>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>鲜花用途：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="select-box">
+							<select id="flowerUseId" name="flowerUseId" class="select">
+								
+							</select>
+						</span>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>鲜花枝数：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="select-box">
+							<select id="flowerBranchNumberId" name="flowerBranchNumberId" class="select">
+								
+							</select>
+						</span>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>市场价格：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="单位元" id="flowerMarketPrice" name="flowerMarketPrice">
+					</div>
+					<span style="line-height: 31px;"></span>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>价格：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="单位元" id="flowerPrice" name="flowerPrice">
+					</div>
+					<span style="line-height: 31px;"></span>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>库存：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="1" placeholder="" id="flowerInventory" name="flowerInventory">
+					</div>
+					<span style="line-height: 31px;"></span>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2" for="describes"><span class="c-red">*</span>鲜花材料：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea class="input-text" id="flowerMaterials" name="flowerMaterials" style="height: 100px; margin-bottom: 20px;" cols="60"></textarea>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2" for="describes"><span class="c-red">*</span>鲜花包装：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea class="input-text" id="flowerPackaging" name="flowerPackaging" style="height: 100px; margin-bottom: 20px;" cols="60"></textarea>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2" for="describes"><span class="c-red">*</span>花语：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea class="input-text" id="flowerLanguage" name="flowerLanguage" style="height: 100px; margin-bottom: 20px;" cols="60"></textarea>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2" for="describes"><span class="c-red">*</span>鲜花介绍：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea class="input-text" id="flowerIntroduce" name="flowerIntroduce" style="height: 100px; margin-bottom: 20px;" cols="60"></textarea>
+					</div>
+				</div>
+				<div class="row cl" id="image">
+					<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>鲜花图样：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<div id="bcd"></div>
+						<a id="btns">选择图片</a>
+						<input type="file" id="file" multiple name="file-2" class="input-file" value="选择图片">
+					</div>
+				</div>
+			</form>
+			<hr />
+			<div class="row cl" style="margin-top: 20px;">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2" id="buttonload">
+
+				</div>
+			</div>
+
+		</div>
+
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+
+		<!--请在下方写此页面业务相关的脚本-->
+		<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+		<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+		<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+		<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script>
+		<script type="text/javascript" src="lib/ueditor/1.4.3/ueditor.config.js"></script>
+		<script type="text/javascript" src="lib/ueditor/1.4.3/ueditor.all.min.js">
+		</script>
+		<script type="text/javascript" src="lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+
+		<script type="text/javascript">
+			
+			
+			getAllFlowertype();
+			getAllFloweruse();
+			getAllFlowerbranchnumber();
+			
+			function getAllFlowertype() {
+				$.ajax({
+					url: "http://localhost:8080/Flowertype/getAllFlowertype",
+					success: function(data) {
+						if(data.code == 1) {
+							myFlowerType = "";
+							$.each(data.data, function(index, obj) {
+								myFlowerType += "<option value='" + obj.flowerTypeId + "'>" + obj.flowerTypeName + "</option>";
+							});
+							$("#flowerTypeId").append(myFlowerType);
+						}
+					}
+				});
+			}
+			function getAllFloweruse() {
+				$.ajax({
+					url: "http://localhost:8080/Floweruse/getAllFloweruse",
+					success: function(data) {
+						if(data.code == 1) {
+							myFlowerUse = "";
+							$.each(data.data, function(index, obj) {
+								myFlowerUse += "<option value='" + obj.flowerUseId + "'>" + obj.flowerUseName + "</option>";
+							});
+							$("#flowerUseId").append(myFlowerUse);
+						}
+					}
+				});
+			}
+			function getAllFlowerbranchnumber() {
+				$.ajax({
+					url: "http://localhost:8080/Flowerbranchnumber/getAllFlowerbranchnumber",
+					success: function(data) {
+						if(data.code == 1) {
+							myFlowerBranchNumber = "";
+							$.each(data.data, function(index, obj) {
+								myFlowerBranchNumber += "<option value='" + obj.flowerBranchNumberId + "'>" + obj.flowerBranchNumber + "</option>";
+							});
+							$("#flowerBranchNumberId").append(myFlowerBranchNumber);
+						}
+					}
+				});
+			}
+
+			var value = "";
+			function article_save_add() {
+				console.log($("#form-article-add").serialize());
+
+				var formData = new FormData(); //h5的DataForm对象
+				formData.append("file", $("#file")[0].files[0]); //赋值，类似于map集合的（键，值）
+				$.ajax({
+					type: "post",
+					url: "http://localhost:8080/Flower/put",
+					data: formData, //html5的DataForm对象
+					dataType: "json", //返回的数据类型：json
+					//否定ajax的默认操作，关系到文件是否上传成功，很重要
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						console.log(data.data);
+						console.log(value);
+						console.log($("#form-article-add").serialize().substring(10) + "&flowerImageName=" + value);
+						$.ajax({
+							url: 'http://localhost:8080/Flower/insertFlower',
+							data: $("#form-article-add").serialize().substring(10) + "&flowerImageName=" + value,
+							dataType: "json",
+							type: "get",
+							success: function(result) {
+								layer.msg('已添加成功!', {
+									icon: 1,
+									time: 1000
+								});
+							},
+							error: function() {
+								alert('服务器忙');
+							},
+						});
+					}
+				});
+			}
+			
+			var urlflowerId = location.search;
+			if(urlflowerId == "" || urlflowerId == null) {
+				$("#buttonload").append("<button onClick='article_save_add();' class='btn btn-primary radius' type='button'><i class='Hui-iconfont'>&#xe632;</i> 添加</button> <button onClick='layer_close();' class='btn btn-default radius' type='button'>&nbsp;&nbsp;取消&nbsp;&nbsp;</button>");
+			} else {
+				$("#buttonload").append("<button onClick='article_save_update();' class='btn btn-primary radius' type='button'><i class='Hui-iconfont'>&#xe632;</i> 修改</button> <button onClick='layer_close();' class='btn btn-default radius' type='button'>&nbsp;&nbsp;取消&nbsp;&nbsp;</button>");				
+				document.getElementById("image").style.display="none";//隐藏
+				getFlowerById();
+			}
+			
+			function getFlowerById() {
+//				var urlflowerId = location.search; //获取url中"?"符后的字串 
+				
+				$.ajax({
+					url: 'http://localhost:8080/Flower/getFlower',
+					data: {
+						flowerId: urlflowerId.substring(10),
+						skip:0,
+						size:1,
+						rank:1
+					},
+					dataType: "json",
+					type: "get",
+					success: function(data) {						
+						$.each(data.data, function(index, obj) {
+							$("#flowerId").val(obj.flowerId);
+							$("#flowerName").val(obj.flowerName);
+							$("#flowerTypeId").val(obj.flowerTypeId);
+							console.log(obj.flowerUseId);
+							$("#flowerUseId").val(obj.flowerUseId);
+							console.log(obj.flowerBranchNumberId);
+							$("#flowerBranchNumberId").val(obj.flowerBranchNumberId);
+							$("#flowerMarketPrice").val(obj.flowerMarketPrice);
+							$("#flowerPrice").val(obj.flowerPrice);
+							$("#flowerInventory").val(obj.flowerInventory);
+							$("#flowerMaterials").val(obj.flowerMaterials);
+							$("#flowerPackaging").val(obj.flowerPackaging);
+							$("#flowerLanguage").val(obj.flowerLanguage);
+							$("#flowerIntroduce").val(obj.flowerIntroduce);
+						});						
+					},
+					error: function(data) {
+						console.log(data.msg);
+					},
+				});
+			}
+
+			function article_save_update() {				
+				console.log($("#form-article-add").serialize());
+				$.ajax({
+					url: 'http://localhost:8080/Flower/updateFlower',
+					data: $("#form-article-add").serialize(),
+					dataType: "json",
+					type: "get",
+					success: function(result) {
+						layer.msg('已修改成功!', {
+							icon: 1,
+							time: 1000
+						});
+					},
+					error: function() {
+						alert('服务器忙');
+					},
+				});
+			}
+
+			$(function() {
+				$("#file").change(function(e) {
+					var imgBox = e.target;
+					uploadImg($('#bcd'), imgBox)
+				});
+
+				function uploadImg(element, tag) {
+					var file = tag.files[0];
+					var imgSrc;
+					if(!/image\/\w+/.test(file.type)) {
+						alert("看清楚，这个需要图片！");
+						return false;
+					}
+					var reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = function() {
+						console.log(this.result);
+						imgSrc = this.result;
+						var imgs = document.createElement("img");
+						$(imgs).attr("src", imgSrc);
+						element.append(imgs);
+					};
+				}
+			});
+
+			$("#file").on('change', function() {
+				value = $(this).val();
+				value = value.split("\\")[2];
+			})
+			$("#btns").click(function() {
+				$("#file").click();
+
+			});
+		</script>
+	</body>
+
+</html>

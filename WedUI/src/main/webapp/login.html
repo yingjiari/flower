@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="author" content="order by dede58.com" />
+		<title>后台登录</title>
+		<meta name="author" content="DeathGhost" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" tppabs="css/style.css" />
+		<style>
+			body {
+				height: 100%;
+				background: #16a085;
+				overflow: hidden;
+				background-image: url(img/7857875027eed54.jpg);
+				background-size: 100% 100%;
+			}
+			
+			canvas {
+				z-index: -1;
+				position: absolute;
+			}
+			.admin_login{
+				box-shadow:0 0 0 0;
+			}
+			
+		</style>
+		<script src="js/jquery.js"></script>
+		<script src="js/verificationNumbers.js" tppabs="js/verificationNumbers.js"></script>
+		<script src="js/Particleground.js" tppabs="js/Particleground.js"></script>
+		<!--<script>
+			$(document).ready(function() {
+				//粒子背景特效
+				$('body').particleground({
+					dotColor: '#5cbdaa',
+					lineColor: '#5cbdaa'
+				});
+			});
+		</script>-->
+	</head>
+
+	<body>
+		<dl class="admin_login">
+			<dt>
+  <strong>鲜花后台管理系统</strong>
+  <em>Flower Management System</em>
+ </dt>
+			<dd class="user_icon">
+				<input type="text" placeholder="账号" class="login_txtbx" id="adminAccount" name="adminAccount" />
+			</dd>
+			<dd class="pwd_icon">
+				<input type="password" placeholder="密码" class="login_txtbx" id="adminPassword" name="adminPassword" />
+			</dd>
+			<dd class="val_icon">
+				<div class="checkcode">
+					<input type="text" id="J_codetext" placeholder="请输入验证码（不区分大小写）" maxlength="4" class="login_txtbx input-val">
+					<canvas id="canvas" width="100" height="36"></canvas>
+				</div>
+			</dd>
+			<dd>
+				<input type="button" value="立即登陆" class="submit_btn" />
+			</dd>
+		</dl>
+		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+		<script>
+			$(function() {
+				var show_num = [];
+				draw(show_num);
+
+				$("#canvas").on('click', function() {
+					draw(show_num);
+				})
+				
+				$(".submit_btn").on('click', function() {
+					var adminAccount = $("#adminAccount").val();
+					var adminPassword = $("#adminPassword").val();
+					$.ajax({
+						type: 'get',
+						url: 'http://localhost:8080/admin/selectAdmin',
+						data: {
+							adminAccount: adminAccount
+						},
+						success: function(data) {
+							if(adminAccount == "" || adminAccount == null) {
+								layer.msg("账号不能为空", {
+									icon: 1,
+									time: 2000
+								});
+							} else if(data.data == null) {
+								layer.msg("账号" + adminAccount + "不存在", {
+									icon: 1,
+									time: 2000
+								});
+							} else {
+								if(adminPassword == data.data.adminPassword) {
+									var val = $(".input-val").val().toLowerCase();
+									var num = show_num.join("");
+									if(val == '') {
+										layer.msg("请输入验证码", {
+											icon: 1,
+											time: 2000
+										});
+									} else if(val == num) {
+										layer.msg("管理员" + adminAccount + "登录成功!", {
+											icon: 1,
+											time: 2000
+										});
+										location.href = "index.html";
+									} else {
+										layer.msg("验证码错误！请重新输入！", {
+											icon: 1,
+											time: 2000
+										});
+										$(".input-val").val('');
+										draw(show_num);
+									}
+
+								} else if(adminPassword == "" || adminPassword == null) {
+									layer.msg("密码不能为空", {
+										icon: 1,
+										time: 2000
+									});
+								} else {
+									layer.msg("账号" + adminAccount + "密码错误", {
+										icon: 1,
+										time: 2000
+									});
+								}
+							}
+						},
+						error: function(data) {
+							console.log(data.msg);
+						},
+					});
+
+				})
+			})
+
+			function draw(show_num) {
+				var canvas_width = $('#canvas').width();
+				var canvas_height = $('#canvas').height();
+				var canvas = document.getElementById("canvas"); //获取到canvas的对象，演员
+				var context = canvas.getContext("2d"); //获取到canvas画图的环境，演员表演的舞台
+				canvas.width = canvas_width;
+				canvas.height = canvas_height;
+				var sCode = "A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0";
+				var aCode = sCode.split(",");
+				var aLength = aCode.length; //获取到数组的长度
+
+				for(var i = 0; i <= 3; i++) {
+					var j = Math.floor(Math.random() * aLength); //获取到随机的索引值
+					var deg = Math.random() * 30 * Math.PI / 180; //产生0~30之间的随机弧度
+					var txt = aCode[j]; //得到随机的一个内容
+					show_num[i] = txt.toLowerCase();
+					var x = 10 + i * 20; //文字在canvas上的x坐标
+					var y = 20 + Math.random() * 8; //文字在canvas上的y坐标
+					context.font = "bold 23px 微软雅黑";
+
+					context.translate(x, y);
+					context.rotate(deg);
+
+					context.fillStyle = randomColor();
+					context.fillText(txt, 0, 0);
+
+					context.rotate(-deg);
+					context.translate(-x, -y);
+				}
+				for(var i = 0; i <= 5; i++) { //验证码上显示线条
+					context.strokeStyle = randomColor();
+					context.beginPath();
+					context.moveTo(Math.random() * canvas_width, Math.random() * canvas_height);
+					context.lineTo(Math.random() * canvas_width, Math.random() * canvas_height);
+					context.stroke();
+				}
+				for(var i = 0; i <= 30; i++) { //验证码上显示小点
+					context.strokeStyle = randomColor();
+					context.beginPath();
+					var x = Math.random() * canvas_width;
+					var y = Math.random() * canvas_height;
+					context.moveTo(x, y);
+					context.lineTo(x + 1, y + 1);
+					context.stroke();
+				}
+			}
+
+			function randomColor() { //得到随机的颜色值
+				var r = Math.floor(Math.random() * 256);
+				var g = Math.floor(Math.random() * 256);
+				var b = Math.floor(Math.random() * 256);
+				return "rgb(" + r + "," + g + "," + b + ")";
+			}
+		
+		
+		
+		</script>
+	</body>
+
+</html>
